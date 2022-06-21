@@ -28,6 +28,7 @@
     "test:ci": "NODE_ENV=test jest --ci",
     "test:watch": "NODE_ENV=test jest --watch --verbose",
     "build": "yarn ts:build",
+    "prod": "yarn ts:build && yarn install --production",
     "clean": "rimraf node_modules",
     "lint": "eslint . --ext .ts",
     "pretty": "prettier --write .",

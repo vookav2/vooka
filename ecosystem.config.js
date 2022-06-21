@@ -11,6 +11,7 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         LOG_LEVEL: 'info',
+        DOTENV_CONFIG_PATH: '/etc/.tmp/.env',
       },
     },
   ],
