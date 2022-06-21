@@ -1,0 +1,50 @@
+import { EventEmitter } from 'events'
+import { makeCommands } from '../handlers/commands'
+import { makePlayerButtons } from '../handlers'
+
+class Context extends EventEmitter {
+  private static _context: Context
+
+  public constructor(private _contexts: Map<symbol, unknown> = new Map()) {
+    super()
+    this._init()
+  }
+  public add<T>(key: string, value: T): T {
+    this._contexts.set(Symbol.for(key), value)
+
+    return value
+  }
+  public get<T>(key: string): T {
+    return this._contexts.get(Symbol.for(key)) as T
+  }
+  public addTo<T>(to: string, key: string, value: T): T {
+    this.get<Map<symbol, T>>(to).set(Symbol.for(key), value)
+
+    return value
+  }
+  public deleteFrom(from: string, key: string): boolean {
+    return this.get<Map<symbol, unknown>>(from).delete(Symbol.for(key))
+  }
+  public destroy(): void {
+    this._clean()
+  }
+  private _init(): void {
+    this.add('subscribers', new Map<symbol, unknown>())
+    this.add('commands', makeCommands())
+    this.add('buttons', makePlayerButtons())
+
+    this.setMaxListeners(1)
+  }
+  private _clean(): void {
+    this._contexts.clear()
+    this.removeAllListeners()
+  }
+  public static getContext(): Context {
+    if (!Context._context) {
+      Context._context = new Context()
+    }
+    return Context._context
+  }
+}
+
+export const getContext = (): Context => Context.getContext()

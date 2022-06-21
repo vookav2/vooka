@@ -1,0 +1,83 @@
+{
+  "name": "@vookav2/vooka",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "/build"
+  ],
+  "author": "mr687 <davinomoehdanino@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vookav2/vooka.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vookav2/vooka/issues"
+  },
+  "homepage": "https://github.com/vookav2/vooka#readme",
+  "scripts": {
+    "ts:dev": "NODE_OPTIONS=--max-old-space-size=1024 ts-node-dev --respawn --transpile-only --no-notify --cls src/index.ts start-client | npx pino-pretty -i hostname -t SYS:standard",
+    "ts:cmd": "ts-node-dev --respawn --transpile-only --no-notify --cls src/index.ts refresh-commands | npx pino-pretty -i hostname -t SYS:standard",
+    "ts:build": "rimraf build && tsc -p ./tsconfig.build.json",
+    "ts:debug": "node --inspect -r ts-node/register src/index.ts start-client",
+    "ts:check": "tsc-files --noEmit",
+    "test": "NODE_ENV=test jest",
+    "test:ci": "NODE_ENV=test jest --ci",
+    "test:watch": "NODE_ENV=test jest --watch --verbose",
+    "build": "yarn ts:build",
+    "clean": "rimraf node_modules",
+    "lint": "eslint . --ext .ts",
+    "pretty": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/node": "^17.0.40",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-security": "^1.5.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-sonarjs": "^0.13.0",
+    "husky": "^8.0.1",
+    "jest": "^27.4.1",
+    "lint-staged": "^12.4.1",
+    "pino-pretty": "^8.0.0",
+    "prettier": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "songlyrics": "^2.3.3",
+    "ts-jest": "^27.0.1",
+    "ts-node-dev": "^2.0.0",
+    "tsc-files": "^1.1.3",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "@discordjs/rest": "^0.5.0",
+    "@discordjs/voice": "^0.10.0",
+    "@vookav2/searchmusic": "^1.0.2",
+    "discord.js": "^13.7.0",
+    "dotenv": "^16.0.1",
+    "pino": "^8.0.0",
+    "redis": "^4.1.0",
+    "tweetnacl": "^1.0.3",
+    "youtube-dl-exec": "^2.0.12"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "yarn eslint",
+      "yarn prettier --write"
+    ],
+    "**/*.ts": [
+      "tsc-files --noEmit"
+    ]
+  },
+  "engines": {
+    "node": ">= 16.9"
+  }
+}
