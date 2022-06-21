@@ -4034,7 +4034,7 @@ songlyrics@^2.3.2:
     got "^11.8.2"
     user-agents "^1.0.793"
 
-songlyrics@^2.3.3:
+songlyrics@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/songlyrics/-/songlyrics-2.4.2.tgz#33f66bf525901d6a1b27b900c70f3835a4841c4e"
   integrity sha512-yy3SXrePC9kn6Ph6aDYQfJS5srUdS1fcWEuNYYGhylzVgj29s64gpllJnX/U3nEakDYnInjwS8bYF0s5vR9ZyQ==
