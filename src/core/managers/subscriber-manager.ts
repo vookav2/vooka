@@ -44,5 +44,4 @@ export const makeSubscriber: AsyncFuncParams<SubscriberParams, void> = async ({
   context.addTo('subscribers', guildId, subscriber)
   voiceConnection.on(VoiceConnectionStatus.Destroyed, (_, __) => deleteSubscriber())
 }
-export const getSubscriber = (guildId: string) =>
-  getContext().get<Map<symbol, Subscriber>>('subscribers').get(Symbol.for(guildId))
+export const getSubscriber = (guildId: string) => getContext().getFrom<Subscriber | undefined>('subscribers', guildId)
