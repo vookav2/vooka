@@ -36,6 +36,7 @@ export const createAudioStream = async (id: string, refererId?: string) =>
       {
         quiet: true,
         output: '-',
+        retries: 7,
         format: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
         limitRate: '100K',
         referer: refererId ? `https://music.youtube.com/watch?v=${refererId}` : 'https://music.youtube.com',
