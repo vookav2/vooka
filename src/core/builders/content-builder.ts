@@ -7,6 +7,7 @@ import { inlineCode, italic, userMention } from '@discordjs/builders'
 import { Pagination } from '../managers'
 import { Song } from '@vookav2/searchmusic'
 import { TLyrics } from 'songlyrics'
+import { emojiAudio } from '../../miscs'
 import { strLimit } from '../../util'
 
 const makeButton = () => new MessageButton().setStyle('SECONDARY').setDisabled(false)
@@ -33,23 +34,23 @@ export const makeButtonsPlayer = (options: {
   const { isLoading, isPaused, isPlaying, isRepeatCurrent, hasNext, hasPrevious } = options
   const topRow = new MessageActionRow().addComponents([
     makeButton()
-      .setLabel('⏪')
+      .setLabel(emojiAudio.previous)
       .setCustomId(PlayerCustomId.Prev)
       .setDisabled(!hasPrevious || isLoading),
     makeButton()
-      .setLabel(isPlaying ? '⏸' : isPaused ? '▶️' : '⏸')
+      .setLabel(isPlaying ? emojiAudio.pause : isPaused ? emojiAudio.play : emojiAudio.pause)
       .setCustomId(isPlaying ? PlayerCustomId.Pause : isPaused ? PlayerCustomId.Play : PlayerCustomId.Pause)
       .setDisabled(isLoading ?? false),
     makeButton()
-      .setLabel('⏩')
+      .setLabel(emojiAudio.next)
       .setCustomId(PlayerCustomId.Next)
       .setDisabled(!hasNext || isLoading),
     makeButton()
-      .setLabel('🔂')
+      .setLabel(emojiAudio.repeatSingle)
       .setCustomId(PlayerCustomId.RepeatCurrent)
       .setDisabled(isLoading ?? isRepeatCurrent ?? false),
     makeButton()
-      .setLabel('⏹')
+      .setLabel(emojiAudio.stop)
       .setCustomId(PlayerCustomId.Stop)
       .setStyle('DANGER')
       .setDisabled(isLoading ?? false),
@@ -98,7 +99,8 @@ export const makePlaylistContent = (
   const { currentPage, totalPages, totalContent, perPage, currentIndex } = pagination
   const startNumber = perPage * (currentPage - 1)
 
-  const getIcon = (no: number) => (isPaused ? '⏸' : isPlaying ? '▶️' : isLoading ? '🔄' : no)
+  const getIcon = (no: number) =>
+    isPaused ? emojiAudio.pause : isPlaying ? emojiAudio.play : isLoading ? emojiAudio.loading : no
 
   const content = songs.slice(startNumber, startNumber + perPage).map<string>((song, index) => {
     const number = startNumber + index + 1
