@@ -7,7 +7,6 @@ import { makeLogger } from './util'
 const handleProcessException = (err: Error) => {
   const logger = makeLogger('ProcessException')
   logger.error(err)
-  process.exit(1)
 }
 
 process.on('uncaughtException', handleProcessException)
