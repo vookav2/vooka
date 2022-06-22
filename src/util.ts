@@ -1,9 +1,10 @@
 import { getContext } from './core'
 import { hashMd5 } from '@vookav2/searchmusic/build/utils'
 import { pino } from 'pino'
+import { setTimeout } from 'node:timers/promises'
 
 export const config = () => getContext().get<NodeJS.ProcessEnv>('config')
-export const sleep = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds))
+export const sleep = (delay: number) => setTimeout(delay)
 
 // STRING
 export const strLimit = (str: string, length: number, end = '...') =>
