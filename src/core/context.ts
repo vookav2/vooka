@@ -19,6 +19,9 @@ class Context extends EventEmitter {
   public get<T>(key: string): T {
     return this._contexts.get(Symbol.for(key)) as T
   }
+  public getFrom<T>(from: string, key: string): T {
+    return this.get<Map<symbol, T>>(from).get(Symbol.for(key)) as T
+  }
   public addTo<T>(to: string, key: string, value: T): T {
     this.get<Map<symbol, T>>(to).set(Symbol.for(key), value)
 
