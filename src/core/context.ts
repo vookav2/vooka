@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'fs'
+
 import { EventEmitter } from 'events'
 import { makeCommands } from '../handlers/commands'
 import { makePlayerButtons } from '../handlers'
@@ -32,8 +34,28 @@ class Context extends EventEmitter {
     this.add('subscribers', new Map<symbol, unknown>())
     this.add('commands', makeCommands())
     this.add('buttons', makePlayerButtons())
+    this.add('config', this._initConfig())
 
     this.setMaxListeners(1)
+  }
+  private _initConfig(): NodeJS.ProcessEnv {
+    const path = './config.json'
+    if (existsSync(path)) {
+      const text = readFileSync(path, 'utf-8')
+      return JSON.parse(text)
+    } else {
+      const { NODE_ENV, LOG_LEVEL, TOKEN, CLIENT_ID, GUILD_TEST_ID, CHANNEL_TEST_ID, APP_ID, REDIS_URI } = process.env
+      return {
+        NODE_ENV,
+        LOG_LEVEL,
+        TOKEN,
+        CLIENT_ID,
+        GUILD_TEST_ID,
+        CHANNEL_TEST_ID,
+        APP_ID,
+        REDIS_URI,
+      }
+    }
   }
   private _clean(): void {
     this._contexts.clear()

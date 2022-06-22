@@ -13,6 +13,6 @@
     "noEmitOnError": true,
     "noImplicitAny": false
   },
-  "include": ["src/**/*.ts", "env.d.ts", "src/types.d.ts"],
+  "include": ["src/**/*.ts", "env.d.ts", "types.d.ts"],
   "exclude": ["node_modules", "build", "**/*.spec.ts", "**/__test__"]
 }

@@ -2,16 +2,14 @@ module.exports = {
   apps: [
     {
       name: 'pm2-ecosystem-example',
-      script: './build/index.js',
+      script: './index.js',
+      args: 'start-client',
       max_memory_restart: '800M',
-      exec_mode: 'cluster',
-      instances: 'max',
       autorestart: true,
       error_file: '/dev/null',
       env: {
         NODE_ENV: 'production',
         LOG_LEVEL: 'info',
-        DOTENV_CONFIG_PATH: '/etc/.tmp/.env',
       },
     },
   ],

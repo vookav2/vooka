@@ -1,4 +1,8 @@
-export const config = process.env
+import { getContext } from './core'
+import { hashMd5 } from '@vookav2/searchmusic/build/utils'
+import { pino } from 'pino'
+
+export const config = getContext().get<NodeJS.ProcessEnv>('config')
 export const sleep = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds))
 
 // STRING
@@ -57,8 +61,6 @@ class Safety<T> {
 }
 export const safety = Safety.of
 
-import { hashMd5 } from '@vookav2/searchmusic/build/utils'
-import { pino } from 'pino'
 export { ytUrl } from '@vookav2/searchmusic/build/yt-scraper/yt-util'
 
 export const makeLogger = (childName?: string) => {
