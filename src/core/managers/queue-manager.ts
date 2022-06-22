@@ -69,7 +69,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
   const getSong = (position: number) => get<Song[]>('songs').at(position)
   const currentSong = () => getSong(get<number>('position'))
   const hasPrevious = () => get<number>('position') > 0
-  const hasNext = () => get<number>('position') < get<number>('length')
+  const hasNext = () => get<number>('position') < get<number>('length') - 1
 
   const increasePosition = () => set('position', get<number>('position') + 1)
   const decreasePosition = () => set('position', get<number>('position') - 1)
