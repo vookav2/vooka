@@ -2,8 +2,8 @@ import { Collection, GuildMember } from 'discord.js'
 import { Command, makeCommand } from '../entities'
 import { Playlist, getPlaylistFromUrl, querySuggestion, search } from '@vookav2/searchmusic'
 import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders'
+import { getSubscriber, makeSubscriber } from '../core'
 
-import { makeSubscriber } from '../core'
 import { safety } from '../util'
 import { ytUrl } from '@vookav2/searchmusic/build/yt-scraper'
 
@@ -15,6 +15,7 @@ export const makeCommands = () => {
     slashCommand: new SlashCommandBuilder()
       .setName('play')
       .setDescription('Play a song')
+      .setDMPermission(false)
       .addStringOption(
         new SlashCommandStringOption()
           .setName('query')
@@ -37,6 +38,12 @@ export const makeCommands = () => {
       if (!playlistRequest) {
         throw new Error('Playlist not found')
       } else {
+        const subscriber = getSubscriber(guildId!)
+        if (subscriber) {
+          await message.editReply('Can not play due to the bot already played song in this guild.')
+          throw new Error('Subscriber already registered.')
+        }
+
         await makeSubscriber({
           getPlaylist: () => playlistRequest,
           guildId: guildId!,
