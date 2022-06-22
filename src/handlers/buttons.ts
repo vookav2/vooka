@@ -59,7 +59,6 @@ export const makePlayerButtons = () => {
   const stopButton = makeButton({
     customId: 'player@stop',
     deleteDelay,
-    manualDelete: true,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
