@@ -81,7 +81,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
     if (get<QueueOptions>('options').repeat && get<number>('position') > -1) {
       decreasePosition()
     } else {
-      get<Message[]>('deleteMessages').forEach(message => message.delete())
+      get<Message[]>('deleteMessages').forEach(message => message.deletable && message.delete())
       set('deleteMessages', [])
     }
   }
