@@ -12,7 +12,7 @@ class CacheRedis {
   public constructor() {
     this._logger = makeLogger('CacheRedis')
     this._client = createClient({
-      url: config.REDIS_URI,
+      url: config().REDIS_URI,
     })
 
     this._client.on('error', err => this._logger.error(err))

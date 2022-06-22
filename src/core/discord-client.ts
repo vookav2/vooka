@@ -74,7 +74,7 @@ export const startDiscordClient = () => {
     }
 
     logger.debug('Client Initiating: Connecting to Discord')
-    await client.login(config.TOKEN).catch(initiateError)
+    await client.login(config().TOKEN).catch(initiateError)
   }
 
   initiate()

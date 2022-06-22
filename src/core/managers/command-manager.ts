@@ -7,10 +7,10 @@ import { Routes } from 'discord-api-types/v10'
 import { getContext } from '../context'
 
 export const registerSlashCommands = async () => {
-  const rest = new REST({ version: '10' }).setToken(config.TOKEN!)
+  const rest = new REST({ version: '10' }).setToken(config().TOKEN!)
   const commands = getContext().get<Collection<string, Command>>('commands')
   const commandsJSON = commands.map(command => command.slashCommand.toJSON())
-  const { APP_ID, GUILD_TEST_ID, NODE_ENV } = config
+  const { APP_ID, GUILD_TEST_ID, NODE_ENV } = config()
 
   const guildRoutes = Routes.applicationGuildCommands(APP_ID!, GUILD_TEST_ID!)
   const appRoutes = Routes.applicationCommands(APP_ID!)

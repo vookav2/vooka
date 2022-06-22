@@ -2,7 +2,7 @@ import { getContext } from './core'
 import { hashMd5 } from '@vookav2/searchmusic/build/utils'
 import { pino } from 'pino'
 
-export const config = getContext().get<NodeJS.ProcessEnv>('config')
+export const config = () => getContext().get<NodeJS.ProcessEnv>('config')
 export const sleep = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds))
 
 // STRING
@@ -65,7 +65,7 @@ export { ytUrl } from '@vookav2/searchmusic/build/yt-scraper/yt-util'
 
 export const makeLogger = (childName?: string) => {
   const pinoLogger = pino({
-    level: config.LOG_LEVEL || 'info',
+    level: process.env.NODE_ENV === 'development' ? 'trace' : 'info',
   })
   return childName ? pinoLogger.child({ name: childName }) : pinoLogger
 }

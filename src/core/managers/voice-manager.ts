@@ -21,7 +21,7 @@ export const makeVoiceConnection = ({
     adapterCreator: voiceAdapterCreator,
     selfDeaf: true,
     selfMute: false,
-    debug: config.NODE_ENV === 'development',
+    debug: config().NODE_ENV === 'development',
   })
 
   const waitForConnectionReady = async (voiceConnection: VoiceConnection) => {
