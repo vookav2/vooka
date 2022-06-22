@@ -12,6 +12,7 @@ copyFiles() {
 	cp yarn.lock ./build
 	cp config.json ./build
 	tar -zcvf build.tar.gz ./build
+	rm -rf ./build
 }
 
 init
