@@ -41,9 +41,9 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
 
   const deleteReply: MessageHandler['deleteReply'] = async () => {
     if (interaction) {
-      await interaction.deleteReply().then(saveMessage)
+      await interaction.deleteReply().catch(() => true)
     } else if (message && message.deletable) {
-      await message.delete().then(saveMessage)
+      await message.delete().catch(() => true)
     }
     destroy()
   }
