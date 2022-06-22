@@ -91,7 +91,7 @@ export const makePlayerButtons = () => {
       if (!queue) {
         return
       }
-      const { title, channel, hash } = queue.currentSong()
+      const { title, channel, hash } = queue.currentSong()!
       const lyrics = await lyricsSearch(`${title} ${channel.name}`, hash)
       if (!lyrics) {
         return

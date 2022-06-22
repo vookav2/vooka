@@ -21,7 +21,7 @@ export type Queue = {
   pause: () => void
   unpause: () => void
   setRepeat: () => void
-  currentSong: () => Song
+  currentSong: () => Song | undefined
   addDeleteMessage: (message: Message) => void
 }
 type QueueParams = {
@@ -66,7 +66,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
 
   const setOptions = (options: QueueOptions = { repeat: false }) => set('options', options)
 
-  const getSong = (position: number) => get<Song[]>('songs')[position]
+  const getSong = (position: number) => get<Song[]>('songs').at(position)
   const currentSong = () => getSong(get<number>('position'))
   const hasPrevious = () => get<number>('position') > 0
   const hasNext = () => get<number>('position') < get<number>('length')
@@ -102,13 +102,12 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
     playAudio(currentSong())
   }
 
-  const getReferer = (): string | undefined => {
-    if (hasPrevious()) {
-      return getSong(get<number>('position') - 1).id
+  const getReferer = (): string | undefined => getSong(get<number>('position') - 1)?.id
+  const playAudio = async (song: Song | undefined) => {
+    if (!song) {
+      destroy()
+      return
     }
-    return undefined
-  }
-  const playAudio = async (song: Song) => {
     await createAudioStream(song.id, getReferer())
       .then(stream => createAudioResourceFromStream(stream, song))
       .then(resource => audioPlayer.play(resource))
