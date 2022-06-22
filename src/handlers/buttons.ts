@@ -9,7 +9,7 @@ export const makePlayerButtons = () => {
 
   const getQueue = (guildId: string) => {
     const subscriber = getSubscriber(guildId) as Subscriber
-    return subscriber.queue
+    return subscriber?.queue
   }
 
   const previousButton = makeButton({
@@ -59,6 +59,7 @@ export const makePlayerButtons = () => {
   const stopButton = makeButton({
     customId: 'player@stop',
     deleteDelay,
+    manualDelete: true,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
