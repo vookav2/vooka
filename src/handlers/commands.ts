@@ -35,7 +35,7 @@ export const makeCommands = () => {
       }
 
       if (!playlistRequest) {
-        message.deleteReply()
+        throw new Error('Playlist not found')
       } else {
         await makeSubscriber({
           getPlaylist: () => playlistRequest,
