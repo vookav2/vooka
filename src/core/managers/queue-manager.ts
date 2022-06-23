@@ -76,13 +76,17 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
 
   const isPlayerStatus = (status: AudioPlayerStatus) => audioPlayer.state.status === status
 
+  const deletePendingMessages = () => {
+    get<Message[]>('deleteMessages').forEach(message => message.deletable && message.delete())
+    set('deleteMessages', [])
+  }
+
   const adjustNext = () => {
     increasePosition()
     if (get<QueueOptions>('options').repeat && get<number>('position') > -1) {
       decreasePosition()
     } else {
-      get<Message[]>('deleteMessages').forEach(message => message.deletable && message.delete())
-      set('deleteMessages', [])
+      deletePendingMessages()
     }
   }
 
@@ -162,6 +166,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
     if (!voiceDestroyed) {
       voiceConnection.destroy()
     }
+    deletePendingMessages()
     message.deleteReply()
     audioPlayer.stop()
     meta.clear()
