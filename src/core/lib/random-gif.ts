@@ -27,13 +27,15 @@ const tenorRequestUrl = (path: string) => {
 const search = async (query: string, limit = 10) => {
   const url = `${tenorRequestUrl(
     'search'
-  )}&q=${query}&limit=${limit}&searchfilter=sticker&contentfilter=low&random=true&media_filter=gif&ar_range=wide`
+  )}&q=${query}&limit=${limit}&searchfilter=&contentfilter=off&random=true&media_filter=gif&ar_range=wide`
   return (await makeRequest(url)) as SearchGifResponse
 }
 
-export const getRandomGifUrl = async (query: string) => {
+export const getRandomGifUrl = async () => {
+  const queries = ['dance', 'sexy dance', 'funny dance', 'baby dance', 'joget', 'joget tiktok']
+  const randomIndex = Math.floor(Math.random() * queries.length)
   try {
-    const res = await search(query, 1)
+    const res = await search(queries[randomIndex], 1)
     return res.results.shift()?.media_formats?.gif?.url
   } catch (error) {
     return undefined
