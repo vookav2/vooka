@@ -114,8 +114,10 @@ export const makePlaylistContent = (
   content.push('\n' + inlineCode(`page: ${currentPage} of ${totalPages} Total: ${totalContent} song(s)`))
   return content.join('\n')
 }
-export const makeSongEmbed = (song: Song) => {
-  const catGifURL = 'https://c.tenor.com/APAoWgAqNxkAAAAM/cat-dance-catto-dace.gif'
+export const makeSongEmbed = (song: Song, gifUrl?: string) => {
+  if (!gifUrl) {
+    gifUrl = 'https://c.tenor.com/APAoWgAqNxkAAAAM/cat-dance-catto-dace.gif'
+  }
   return makeEmbed()
     .setTitle(`🎧 ${strLimit(song.title, 256)}`)
     .setDescription(makeSupportContent())
@@ -123,10 +125,10 @@ export const makeSongEmbed = (song: Song) => {
     .addField('Album', song.album?.title ?? '-', true)
     .addField('Explicit', song.explicit ? 'Yes' : 'No', true)
     .addField('Requested by', userMention('464985649460674572'), false)
-    .setAuthor({ name: 'Playing', iconURL: catGifURL })
-    .setFooter({ text: '•••', iconURL: catGifURL })
+    .setAuthor({ name: 'Playing', iconURL: gifUrl })
+    .setFooter({ text: '•••', iconURL: gifUrl })
     .setThumbnail(song.thumbnail)
-    .setImage(catGifURL)
+    .setImage(gifUrl)
 }
 export const makeSupportContent = (): string => {
   const DONATE_URL = 'https://saweria.co/daphino'

@@ -5,6 +5,7 @@ import { createAudioResourceFromStream, createAudioStream, makeAudioPlayer } fro
 import { makeButtonsPlayer, makePlaylistContent, makeSongEmbed } from '../builders/content-builder'
 
 import { MessageHandler } from '../../entities'
+import { getRandomGifUrl } from '../lib'
 import { makeLogger } from '../../util'
 
 export type Pagination = {
@@ -77,7 +78,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
   const isPlayerStatus = (status: AudioPlayerStatus) => audioPlayer.state.status === status
 
   const deletePendingMessages = () => {
-    get<Message[]>('deleteMessages').forEach(message => message.deletable && message.delete())
+    get<Message[]>('deleteMessages')?.forEach(message => message.deletable && message.delete())
     set('deleteMessages', [])
   }
 
@@ -112,6 +113,8 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
       destroy()
       return
     }
+    const gifUrl = await getRandomGifUrl('baby dance')
+    set('gifUrl', gifUrl)
     await createAudioStream(song.id, getReferer())
       .then(stream => createAudioResourceFromStream(stream, song))
       .then(resource => audioPlayer.play(resource))
@@ -149,7 +152,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
     })
     return {
       content,
-      embeds: [makeSongEmbed(songs[position < 0 ? 0 : position])],
+      embeds: [makeSongEmbed(songs[position < 0 ? 0 : position], get<string | undefined>('gifUrl'))],
       components: [
         ...makeButtonsPlayer({
           hasNext: hasNext(),

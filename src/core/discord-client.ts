@@ -28,24 +28,24 @@ export const startDiscordClient = () => {
     }
     const context = getContext()
     if (interaction.isAutocomplete()) {
-      logger.debug('Handling autocomplete')
       const { commandName } = interaction
+      logger.debug(`Handling autocomplete ${commandName}`)
       const command = getCommands().get(commandName)
       if (!command || !command.handleAutocomplete) {
         return
       }
       await command.handleAutocomplete(interaction)
     } else if (interaction.isCommand()) {
-      logger.debug('Handling command')
       const { commandName } = interaction
+      logger.debug(`Handling command ${commandName}`)
       const command = getCommands().get(commandName)
       if (!command) {
         return
       }
       await command.handle(interaction)
     } else if (interaction.isButton()) {
-      logger.debug('Handling button')
       const { customId } = interaction
+      logger.debug(`Handling button ${customId}`)
       const button = context.get<Map<string, Button>>('buttons').get(customId)
       if (!button) {
         return
@@ -57,6 +57,7 @@ export const startDiscordClient = () => {
   client.on('debug', debug => logger.debug(debug))
   client.on('warn', warn => logger.warn(warn))
   client.on('ready', _client => {
+    _client.user.setUsername(`vooka 🫡${config().NODE_ENV === 'development' ? ' - nightly' : ''}`)
     getContext().add('client', _client)
     logger.info('Client ready!')
   })
