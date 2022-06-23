@@ -24,6 +24,11 @@ export const makeCommands = () => {
           .setRequired(true)
       ),
     handler: async ({ interaction: { guildId, member, options }, message }) => {
+      if (!(member as GuildMember).voice.channel) {
+        await message.editReply('You are not allowed. Please join to the voice channel first')
+        throw new Error('Member not allowed')
+      }
+
       const query = options.getString('query', true)
 
       let playlistRequest: Promise<Playlist>

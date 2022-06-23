@@ -1,20 +1,28 @@
 import { Button, makeButton } from '../entities'
-import { Subscriber, getSubscriber, lyricsSearch, makeLyricsEmbeds } from '../core'
-
-import { Message } from 'discord.js'
+import { ButtonInteraction, GuildMember, Message } from 'discord.js'
+import { getSubscriber, lyricsSearch, makeLyricsEmbeds } from '../core'
 
 export const makePlayerButtons = () => {
   const buttons: Map<string, Button> = new Map()
   const deleteDelay = 3000
 
   const getQueue = (guildId: string) => {
-    const subscriber = getSubscriber(guildId) as Subscriber
+    const subscriber = getSubscriber(guildId)
     return subscriber?.queue
+  }
+
+  const hasPermission = ({ guildId, member }: ButtonInteraction) => {
+    const subscriber = getSubscriber(guildId!)
+    if (!subscriber) {
+      return false
+    }
+    return (member as GuildMember).voice.channel !== null
   }
 
   const previousButton = makeButton({
     customId: 'player@prev',
     deleteDelay,
+    hasPermission,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
@@ -26,6 +34,7 @@ export const makePlayerButtons = () => {
   const nextButton = makeButton({
     customId: 'player@next',
     deleteDelay,
+    hasPermission,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
@@ -37,6 +46,7 @@ export const makePlayerButtons = () => {
   const playButton = makeButton({
     customId: 'player@play',
     deleteDelay,
+    hasPermission,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
@@ -48,6 +58,7 @@ export const makePlayerButtons = () => {
   const pauseButton = makeButton({
     customId: 'player@pause',
     deleteDelay,
+    hasPermission,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
@@ -59,6 +70,7 @@ export const makePlayerButtons = () => {
   const stopButton = makeButton({
     customId: 'player@stop',
     deleteDelay,
+    hasPermission,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
@@ -70,6 +82,7 @@ export const makePlayerButtons = () => {
   const repeatCurrentButton = makeButton({
     customId: 'player@repeatCurrent',
     deleteDelay,
+    hasPermission,
     handler: async ({ guildId }) => {
       if (!guildId) {
         return
@@ -81,6 +94,7 @@ export const makePlayerButtons = () => {
   const lyricsButton = makeButton({
     customId: 'player@lyrics',
     deleteDelay,
+    hasPermission,
     manualDelete: true,
     handler: async _interaction => {
       const { guildId } = _interaction

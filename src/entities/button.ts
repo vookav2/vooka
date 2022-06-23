@@ -9,28 +9,37 @@ type ButtonParams = {
   shouldDefer?: boolean
   deleteDelay?: number
   manualDelete?: boolean
+  hasPermission?: FuncParams<ButtonInteraction, boolean>
 }
 export type Button = {
   customId: string
   handle: AsyncFuncParams<ButtonInteraction, void>
 }
 
-export const makeButton: FuncParams<ButtonParams, Button> = ({ customId, handler, deleteDelay, manualDelete }) => {
+export const makeButton: FuncParams<ButtonParams, Button> = ({
+  customId,
+  handler,
+  deleteDelay,
+  manualDelete,
+  hasPermission,
+}) => {
   const handle = async (_interaction: ButtonInteraction) => {
-    const { customId: interactionCustomId } = _interaction
-    if (interactionCustomId !== customId) {
-      throw new Error(`Button interaction customId ${customId} is invalid`)
-    }
     await _interaction.deferReply()
+    const message = makeMessage(_interaction)
+
+    if (hasPermission && !hasPermission(_interaction)) {
+      await message.editReply('You are not allowed. Please join to the voice channel first.')
+      message.deleteReplyAfter(3000)
+      return
+    }
     const messageContent = await handler(_interaction)
     if (!messageContent) {
-      await _interaction.deleteReply()
+      await message.deleteReply()
       return
     }
     if (!deleteDelay) {
       deleteDelay = 1000
     }
-    const message = makeMessage(_interaction)
 
     await message.editReply(messageContent)
     if (!manualDelete) {
