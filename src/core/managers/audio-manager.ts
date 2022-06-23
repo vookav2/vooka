@@ -32,7 +32,7 @@ export const createAudioStream = async (id: string, refererId?: string) =>
   new Promise<Readable>((resolve, reject) => {
     const logger = makeLogger('CreateAudioReadable')
     const childProcess = exec(
-      id,
+      `https://www.youtube.com/watch?v=${id}`,
       {
         quiet: true,
         output: '-',
@@ -53,7 +53,8 @@ export const createAudioStream = async (id: string, refererId?: string) =>
     }
     const stdout = childProcess.stdout
     const onChildProcessSpawn = () => resolve(stdout)
-    const onChildProcessSpawnError = () => {
+    const onChildProcessSpawnError = (reason: any) => {
+      logger.error(reason)
       if (!childProcess.killed) {
         logger.debug('Kill child process')
         childProcess.kill()
