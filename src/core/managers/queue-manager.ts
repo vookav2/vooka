@@ -113,7 +113,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
       destroy()
       return
     }
-    const gifUrl = await getRandomGifUrl()
+    const gifUrl = await getRandomGifUrl(song.title)
     set('gifUrl', gifUrl)
     await createAudioStream(song.id, getReferer())
       .then(stream => createAudioResourceFromStream(stream, song))

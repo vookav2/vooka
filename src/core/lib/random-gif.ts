@@ -31,11 +31,11 @@ const search = async (query: string, limit = 10) => {
   return (await makeRequest(url)) as SearchGifResponse
 }
 
-export const getRandomGifUrl = async () => {
+export const getRandomGifUrl = async (query?: string) => {
   const queries = ['dance', 'sexy dance', 'funny dance', 'baby dance', 'joget', 'joget tiktok']
   const randomIndex = Math.floor(Math.random() * queries.length)
   try {
-    const res = await search(queries[randomIndex], 1)
+    const res = await search(query || queries[randomIndex], 1)
     return res.results.shift()?.media_formats?.gif?.url
   } catch (error) {
     return undefined
