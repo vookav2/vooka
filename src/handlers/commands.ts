@@ -35,9 +35,13 @@ export const makeCommands = () => {
       if (ytUrl.isYtUrl(query)) {
         playlistRequest = getPlaylistFromUrl(query)
       } else {
-        const { result } = await search(query)
-        const getPlaylist = safety(result?.getPlaylist).nullOrUndefined()
-        playlistRequest = getPlaylist()
+        const { result: searchResult } = await search(query)
+        const result = safety(searchResult).nullOrUndefined()
+        if (result.type === 'Playlist') {
+          playlistRequest = Promise.resolve(result)
+        } else {
+          playlistRequest = result.getPlaylist()
+        }
       }
 
       if (!playlistRequest) {
