@@ -44,6 +44,8 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
   const get = <T>(key: string): T => meta.get(key) as T
   const set = (key: string, value: unknown) => meta.set(key, value)
   const audioPlayer = makeAudioPlayer()
+  let destroyed = false
+  let queueLocked = false
 
   const initiate = () => {
     setOptions()
@@ -92,6 +94,10 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
   }
 
   const nextSong = (force?: boolean) => {
+    if (queueLocked || destroyed) {
+      return
+    }
+    queueLocked = true
     if (force) {
       setOptions()
     }
@@ -102,6 +108,10 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
     playAudio(currentSong())
   }
   const previousSong = () => {
+    if (queueLocked || destroyed) {
+      return
+    }
+    queueLocked = true
     setOptions()
     decreasePosition()
     playAudio(currentSong())
@@ -120,9 +130,11 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
       .then(stream => createAudioResourceFromStream(stream, song))
       .then(resource => audioPlayer.play(resource))
       .catch(reason => {
+        queueLocked = false
         logger.error(reason)
         nextSong()
       })
+    queueLocked = false
   }
   const pauseAudio = () => audioPlayer.pause()
   const unpauseAudio = () => audioPlayer.unpause()
@@ -167,6 +179,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
   const sendPlaylistContent = () => message.editReply(getContent())
 
   const destroy = (voiceDestroyed = false) => {
+    destroyed = true
     if (!voiceDestroyed) {
       voiceConnection.destroy()
     }

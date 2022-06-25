@@ -53,8 +53,8 @@ export const createAudioStream = async (id: string, refererId?: string) =>
     }
     const stdout = childProcess.stdout
     const onChildProcessSpawn = () => resolve(stdout)
-    const onChildProcessSpawnError = (reason: any) => {
-      logger.error(reason)
+    const onChildProcessSpawnError = (_reason: any) => {
+      stdout.destroy()
       if (!childProcess.killed) {
         logger.debug('Kill child process')
         childProcess.kill()
