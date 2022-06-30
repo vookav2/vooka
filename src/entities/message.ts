@@ -3,6 +3,8 @@ import {
   CommandInteraction,
   Message,
   MessageEditOptions,
+  MessageOptions,
+  MessagePayload,
   WebhookEditMessageOptions,
 } from 'discord.js'
 
@@ -11,6 +13,7 @@ import { sleep } from '../util'
 type Interaction = ButtonInteraction | CommandInteraction
 
 export type MessageHandler = {
+  followUp: AsyncFuncParams<string | MessageOptions | MessagePayload, void>
   editReply: AsyncFuncParams<string | MessageEditOptions | WebhookEditMessageOptions, void>
   deleteReply: AsyncFunc<void>
   deleteReplyAfter: AsyncFuncParams<number, void>
@@ -27,6 +30,16 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
   const saveMessage = (_newMessage: unknown) => {
     message = _newMessage as Message
     interaction = null
+  }
+
+  const followUp: MessageHandler['followUp'] = async _options => {
+    if (!message) {
+      return
+    }
+    message.channel
+      .send(_options)
+      .then(followUpMessage => sleep(3_000).then(followUpMessage.delete))
+      .catch(() => true)
   }
 
   const editReply: MessageHandler['editReply'] = async _options => {
@@ -49,12 +62,13 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
   }
 
   const deleteReplyAfter: MessageHandler['deleteReplyAfter'] = async delay => {
-    await sleep(delay).then(deleteReply)
+    sleep(delay).then(deleteReply)
   }
 
   return {
     editReply,
     deleteReply,
     deleteReplyAfter,
+    followUp,
   }
 }
