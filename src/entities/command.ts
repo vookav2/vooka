@@ -9,12 +9,12 @@ type CommandParams = {
   commandId: string
   slashCommand: any
   handler: AsyncFuncParams<HandlerParams, void>
-  autocompleteHandler: AsyncFuncParams<ApplicationCommandOptionChoiceData, ApplicationCommandOptionChoiceData[]>
+  autocompleteHandler?: AsyncFuncParams<ApplicationCommandOptionChoiceData, ApplicationCommandOptionChoiceData[]>
 }
 export type Command = {
   commandId: string
   handle: AsyncFuncParams<CommandInteraction, void>
-  handleAutocomplete: AsyncFuncParams<AutocompleteInteraction, void> | undefined
+  handleAutocomplete?: AsyncFuncParams<AutocompleteInteraction, void>
   slashCommand: any
 }
 export const makeCommand: FuncParams<CommandParams, Command> = ({
@@ -35,6 +35,9 @@ export const makeCommand: FuncParams<CommandParams, Command> = ({
     })
   }
   const handleAutocomplete: Command['handleAutocomplete'] = async interaction => {
+    if (!autocompleteHandler) {
+      return
+    }
     const data = interaction.options.getFocused(true)
     const choices = await autocompleteHandler(data)
     await interaction.respond(choices)

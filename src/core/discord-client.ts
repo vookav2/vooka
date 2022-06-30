@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { Client, Interaction } from 'discord.js'
+import { Client, Collection, Interaction } from 'discord.js'
 import { config, makeLogger } from '../util'
 import { getCommands, getSubscriber } from './managers'
 
@@ -46,7 +46,13 @@ export const startDiscordClient = () => {
     } else if (interaction.isButton()) {
       const { customId } = interaction
       logger.debug(`Handling button ${customId}`)
-      const button = context.get<Map<string, Button>>('buttons').get(customId)
+      const buttons = context.get<Collection<string, Button>>('buttons')
+      const button = buttons.find(_button => {
+        if (_button.customIdStartWith) {
+          return customId.startsWith(_button.customIdStartWith)
+        }
+        return _button.customId === customId
+      })
       if (!button) {
         return
       }

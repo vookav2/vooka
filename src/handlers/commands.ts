@@ -2,7 +2,7 @@ import { Collection, GuildMember } from 'discord.js'
 import { Command, makeCommand } from '../entities'
 import { Playlist, getPlaylistFromUrl, querySuggestion, search } from '@vookav2/searchmusic'
 import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders'
-import { getSubscriber, makeSubscriber } from '../core'
+import { getContext, getSubscriber, lyricsSearch, makeLyricsButtons, makeLyricsEmbeds, makeSubscriber } from '../core'
 
 import { safety } from '../util'
 import { ytUrl } from '@vookav2/searchmusic/build/yt-scraper'
@@ -74,6 +74,42 @@ export const makeCommands = () => {
     },
   })
 
+  const lyricsCommand = makeCommand({
+    commandId: 'lyrics',
+    slashCommand: new SlashCommandBuilder()
+      .setName('lyrics')
+      .setDescription('Get lyrics of a song')
+      .setDMPermission(false)
+      .addStringOption(
+        new SlashCommandStringOption()
+          .setName('search')
+          .setDescription('song_title artist_name(optional)')
+          .setAutocomplete(false)
+          .setRequired(true)
+      ),
+    handler: async ({ interaction, message }) => {
+      const { guildId, options } = interaction
+      if (!guildId) {
+        throw new Error('Request is not from a guild')
+      }
+      const searchQuery = options.getString('search', true)
+
+      const lyrics = await lyricsSearch(searchQuery)
+      if (!lyrics) {
+        throw new Error('Lyrics not found')
+      }
+      const messageFetched = await interaction.fetchReply()
+      const messageOptions = {
+        content: '\u200B',
+        embeds: makeLyricsEmbeds(lyrics),
+        components: makeLyricsButtons(messageFetched.id),
+      }
+      await message.editReply(messageOptions)
+      getContext().addTo('lyrics', messageFetched.id, message)
+    },
+  })
+
   commands.set(playCommand.commandId, playCommand)
+  commands.set(lyricsCommand.commandId, lyricsCommand)
   return commands
 }

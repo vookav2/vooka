@@ -1,9 +1,9 @@
-import { Button, makeButton } from '../entities'
-import { ButtonInteraction, GuildMember, Message } from 'discord.js'
-import { getSubscriber, lyricsSearch, makeLyricsEmbeds } from '../core'
+import { Button, MessageHandler, makeButton } from '../entities'
+import { ButtonInteraction, Collection, GuildMember, Message } from 'discord.js'
+import { getContext, getSubscriber, lyricsSearch, makeLyricsEmbeds } from '../core'
 
 export const makePlayerButtons = () => {
-  const buttons: Map<string, Button> = new Map()
+  const buttons: Collection<string, Button> = new Collection()
   const deleteDelay = 3000
 
   const getQueue = (guildId: string) => {
@@ -119,6 +119,24 @@ export const makePlayerButtons = () => {
     },
   })
 
+  const removeLyricsButton = makeButton({
+    customId: 'guild:lyrics:{messageId}',
+    customIdStartWith: 'guild:lyrics:',
+    shouldDefer: true,
+    handler: async ({ customId, guildId }) => {
+      if (!guildId) {
+        return
+      }
+      const messageId = customId.replace('guild:lyrics:', '')
+      const lyricsContent = getContext().getFrom<MessageHandler | undefined>('lyrics', messageId)
+      if (!lyricsContent) {
+        return
+      }
+      await lyricsContent.deleteReply()
+      return 'Remove content 🫡'
+    },
+  })
+
   buttons.set(previousButton.customId, previousButton)
   buttons.set(nextButton.customId, nextButton)
   buttons.set(playButton.customId, playButton)
@@ -126,6 +144,7 @@ export const makePlayerButtons = () => {
   buttons.set(stopButton.customId, stopButton)
   buttons.set(repeatCurrentButton.customId, repeatCurrentButton)
   buttons.set(lyricsButton.customId, lyricsButton)
+  buttons.set(removeLyricsButton.customId, removeLyricsButton)
 
   return buttons
 }

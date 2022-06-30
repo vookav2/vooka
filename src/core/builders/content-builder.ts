@@ -69,6 +69,12 @@ export const makeButtonsPlayer = (options: {
   ])
   return [topRow, bottomRow]
 }
+export const makeLyricsButtons = (messageId: string): MessageActionRow[] => {
+  const row = new MessageActionRow().addComponents([
+    makeButton().setLabel('Remove').setCustomId(`guild:lyrics:${messageId}`).setStyle('DANGER').setDisabled(false),
+  ])
+  return [row]
+}
 export const makeLyricsEmbeds = (data: TLyrics): MessageEmbed[] | undefined => {
   const { title, lyrics, source } = data
   if (!lyrics || !lyrics.length) {

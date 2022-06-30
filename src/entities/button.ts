@@ -5,6 +5,7 @@ import { makeMessage } from './message'
 
 type ButtonParams = {
   customId: string
+  customIdStartWith?: string
   handler: AsyncFuncParams<ButtonInteraction, string | WebhookEditMessageOptions | undefined>
   shouldDefer?: boolean
   deleteDelay?: number
@@ -13,11 +14,13 @@ type ButtonParams = {
 }
 export type Button = {
   customId: string
+  customIdStartWith?: string
   handle: AsyncFuncParams<ButtonInteraction, void>
 }
 
 export const makeButton: FuncParams<ButtonParams, Button> = ({
   customId,
+  customIdStartWith,
   handler,
   deleteDelay,
   manualDelete,
@@ -47,5 +50,5 @@ export const makeButton: FuncParams<ButtonParams, Button> = ({
     }
   }
 
-  return { customId, handle }
+  return { customId, customIdStartWith, handle }
 }

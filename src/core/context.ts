@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'fs'
 
+import { Collection } from 'discord.js'
 import { EventEmitter } from 'events'
 import { makeCommands } from '../handlers/commands'
 import { makePlayerButtons } from '../handlers'
@@ -23,7 +24,11 @@ class Context extends EventEmitter {
     return this.get<Map<symbol, T>>(from).get(Symbol.for(key)) as T
   }
   public addTo<T>(to: string, key: string, value: T): T {
-    this.get<Map<symbol, T>>(to).set(Symbol.for(key), value)
+    let collection = this.get<Collection<symbol, T> | undefined>('to')
+    if (!collection) {
+      collection = this.add(to, new Collection<symbol, T>())
+    }
+    collection.set(Symbol.for(key), value)
 
     return value
   }

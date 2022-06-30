@@ -13,13 +13,14 @@ import { sleep } from '../util'
 type Interaction = ButtonInteraction | CommandInteraction
 
 export type MessageHandler = {
+  message: Message | null
   followUp: AsyncFuncParams<string | MessageOptions | MessagePayload, void>
   editReply: AsyncFuncParams<string | MessageEditOptions | WebhookEditMessageOptions, void>
   deleteReply: AsyncFunc<void>
   deleteReplyAfter: AsyncFuncParams<number, void>
 }
 export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction => {
-  let message: Message | null
+  let message: Message | null = null
   let interaction: Interaction | null = _interaction
 
   const destroy = (): void => {
@@ -66,6 +67,7 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
   }
 
   return {
+    message,
     editReply,
     deleteReply,
     deleteReplyAfter,
