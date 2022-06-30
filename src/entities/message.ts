@@ -14,7 +14,10 @@ type Interaction = ButtonInteraction | CommandInteraction
 
 export type MessageHandler = {
   message: Message | null
-  followUp: AsyncFuncParams<{ options: string | MessageOptions | MessagePayload; deleteAfter: number }, void>
+  followUp: AsyncFuncParams<
+    { options: string | MessageOptions | MessagePayload; deleteAfter?: number },
+    Message<boolean> | undefined
+  >
   editReply: AsyncFuncParams<string | MessageEditOptions | WebhookEditMessageOptions, void>
   deleteReply: AsyncFunc<void>
   deleteReplyAfter: AsyncFuncParams<number, void>
@@ -38,9 +41,13 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
       return
     }
     const followUpMessage = await message.channel.send(options)
-    sleep(deleteAfter)
-      .then(() => followUpMessage.delete())
-      .catch(() => true)
+    if (deleteAfter) {
+      sleep(deleteAfter)
+        .then(() => followUpMessage.delete())
+        .catch(() => true)
+    }
+
+    return followUpMessage
   }
 
   const editReply: MessageHandler['editReply'] = async _options => {

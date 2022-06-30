@@ -1,8 +1,8 @@
+import { Message, VoiceBasedChannel } from 'discord.js'
 import { Queue, makeQueue } from './queue-manager'
 
 import { MessageHandler } from '../../entities'
 import { Playlist } from '@vookav2/searchmusic'
-import { VoiceBasedChannel } from 'discord.js'
 import { VoiceConnectionStatus } from '@discordjs/voice'
 import { getContext } from '../context'
 import { makeLogger } from '../../util'
@@ -13,8 +13,8 @@ export type Subscriber = {
   queue: Queue
   isNoMembers: AsyncFunc<boolean>
   isWaitingToDestroy: ReturnFunc<boolean>
-  waitForDestroy: FuncParams<number, void>
-  cancelDestroy: ReturnFunc<void>
+  waitForDestroy: AsyncFuncParams<number, void>
+  cancelDestroy: AsyncFunc<void>
 }
 type SubscriberParams = {
   guildId: string
@@ -40,6 +40,19 @@ export const makeSubscriber: AsyncFuncParams<SubscriberParams, void> = async ({
   const queue = makeQueue({ voiceConnection, playlist, message })
 
   let timeoutDestroy: NodeJS.Timeout | undefined = undefined
+  let waitingDestroyMessage: Message | undefined = undefined
+  let cancelDestroyMessage: Message | undefined = undefined
+
+  const deleteDestroyMessage = async () => {
+    if (waitingDestroyMessage) {
+      await waitingDestroyMessage.delete()
+      waitingDestroyMessage = undefined
+    }
+    if (cancelDestroyMessage) {
+      await cancelDestroyMessage.delete()
+      cancelDestroyMessage = undefined
+    }
+  }
 
   const isNoMembers = async () => {
     try {
@@ -50,27 +63,29 @@ export const makeSubscriber: AsyncFuncParams<SubscriberParams, void> = async ({
     }
   }
   const isWaitingToDestroy = () => timeoutDestroy !== undefined
-  const destroy = () => {
+  const destroy = async () => {
     if (!isWaitingToDestroy()) {
       return
     }
+    await deleteDestroyMessage()
     queue.destroy()
   }
-  const waitForDestroy = (ms: number) => {
+  const waitForDestroy = async (ms: number) => {
     if (isWaitingToDestroy()) {
       return
     }
-    message.followUp({
+    await deleteDestroyMessage()
+    waitingDestroyMessage = await message.followUp({
       options: 'Where you gonna go guys? I will wait for 5 minutes before leaving. ⏳',
-      deleteAfter: 60_000,
     })
     timeoutDestroy = setTimeout(destroy, ms)
   }
-  const cancelDestroy = () => {
+  const cancelDestroy = async () => {
     if (!isWaitingToDestroy()) {
       return
     }
-    message.followUp({ options: 'Hey, you come back. 👋', deleteAfter: 10_000 })
+    await deleteDestroyMessage()
+    cancelDestroyMessage = await message.followUp({ options: 'Hey, you come back. 👋' })
     clearTimeout(timeoutDestroy)
     timeoutDestroy = undefined
   }
