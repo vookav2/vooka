@@ -118,7 +118,7 @@ export const makeSongEmbed = (song: Song, gifUrl?: string) => {
   if (!gifUrl) {
     gifUrl = 'https://c.tenor.com/APAoWgAqNxkAAAAM/cat-dance-catto-dace.gif'
   }
-  const albumTitleOrViews = song.album?.title.includes('Views') ? 'Views' : 'Album'
+  const albumTitleOrViews = song.album?.title.toLowerCase().includes('views') ? 'Views' : 'Album'
   return makeEmbed()
     .setTitle(`🎧 ${strLimit(song.title, 256)}`)
     .setDescription(makeSupportContent())
