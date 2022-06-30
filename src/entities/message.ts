@@ -37,9 +37,9 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
     if (!message) {
       return
     }
-    message.channel
-      .send(_options)
-      .then(followUpMessage => sleep(3_000).then(followUpMessage.delete))
+    const followUpMessage = await message.channel.send(_options)
+    sleep(3000)
+      .then(() => followUpMessage.delete())
       .catch(() => true)
   }
 

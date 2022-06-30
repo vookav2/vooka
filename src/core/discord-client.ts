@@ -77,7 +77,7 @@ export const startDiscordClient = () => {
     if (subscriber.isWaitingToDestroy()) {
       subscriber.cancelDestroy()
     } else if (await subscriber.isNoMembers()) {
-      subscriber.waitForDestroy(60_000)
+      subscriber.waitForDestroy(300_000)
     }
   })
 
