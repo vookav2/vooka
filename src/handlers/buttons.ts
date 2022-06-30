@@ -133,6 +133,7 @@ export const makePlayerButtons = () => {
         return
       }
       await lyricsContent.deleteReply()
+      getContext().deleteFrom('lyrics', messageId)
       return 'Remove content 🫡'
     },
   })
