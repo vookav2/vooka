@@ -60,14 +60,17 @@ export const makeSubscriber: AsyncFuncParams<SubscriberParams, void> = async ({
     if (isWaitingToDestroy()) {
       return
     }
-    message.followUp('Where you gonna go guys? I will wait for 5 minutes before leaving. ⏳')
+    message.followUp({
+      options: 'Where you gonna go guys? I will wait for 5 minutes before leaving. ⏳',
+      deleteAfter: 60_000,
+    })
     timeoutDestroy = setTimeout(destroy, ms)
   }
   const cancelDestroy = () => {
     if (!isWaitingToDestroy()) {
       return
     }
-    message.followUp('Hey, you come back. 👋')
+    message.followUp({ options: 'Hey, you come back. 👋', deleteAfter: 10_000 })
     clearTimeout(timeoutDestroy)
     timeoutDestroy = undefined
   }
