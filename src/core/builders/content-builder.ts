@@ -118,11 +118,12 @@ export const makeSongEmbed = (song: Song, gifUrl?: string) => {
   if (!gifUrl) {
     gifUrl = 'https://c.tenor.com/APAoWgAqNxkAAAAM/cat-dance-catto-dace.gif'
   }
+  const albumTitleOrViews = song.album?.title.includes('Views') ? 'Views' : 'Album'
   return makeEmbed()
     .setTitle(`🎧 ${strLimit(song.title, 256)}`)
     .setDescription(makeSupportContent())
     .addField('Artist', song.channel?.name ?? '-', true)
-    .addField('Album', song.album?.title ?? '-', true)
+    .addField(albumTitleOrViews, song.album?.title ?? '-', true)
     .addField('Explicit', song.explicit ? 'Yes' : 'No', true)
     .addField('Requested by', userMention('464985649460674572'), false)
     .setAuthor({ name: 'Playing', iconURL: gifUrl })
