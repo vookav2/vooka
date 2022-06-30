@@ -11,12 +11,16 @@ import { makeVoiceConnection } from './voice-manager'
 export type Subscriber = {
   guildId: string
   queue: Queue
+  isNoMembers: AsyncFunc<boolean>
+  isWaitingToDestroy: ReturnFunc<boolean>
+  waitForDestroy: FuncParams<number, void>
+  cancelDestroy: ReturnFunc<void>
 }
 type SubscriberParams = {
   guildId: string
   voiceChannel: VoiceBasedChannel
   message: MessageHandler
-  getPlaylist: () => Promise<Playlist>
+  getPlaylist: AsyncFunc<Playlist>
 }
 
 export const makeSubscriber: AsyncFuncParams<SubscriberParams, void> = async ({
@@ -34,14 +38,49 @@ export const makeSubscriber: AsyncFuncParams<SubscriberParams, void> = async ({
   }
 
   const queue = makeQueue({ voiceConnection, playlist, message })
-  const subscriber = { guildId, queue }
 
-  const context = getContext()
-  const deleteSubscriber = () => {
-    context.deleteFrom('subscribers', guildId)
+  let timeoutDestroy: NodeJS.Timeout | undefined = undefined
+
+  const isNoMembers = async () => {
+    try {
+      const channelFetched = await voiceChannel.fetch()
+      return channelFetched.members.filter(member => !member.user.bot).size === 0
+    } catch {
+      return false
+    }
+  }
+  const isWaitingToDestroy = () => timeoutDestroy !== undefined
+  const destroy = () => {
+    if (!isWaitingToDestroy()) {
+      return
+    }
+    queue.destroy()
+  }
+  const waitForDestroy = (ms: number) => {
+    if (isWaitingToDestroy()) {
+      return
+    }
+    timeoutDestroy = setTimeout(destroy, ms)
+  }
+  const cancelDestroy = () => {
+    if (!isWaitingToDestroy()) {
+      return
+    }
+    clearTimeout(timeoutDestroy)
+    timeoutDestroy = undefined
+  }
+  const subscriber: Subscriber = {
+    guildId,
+    queue,
+    isNoMembers,
+    isWaitingToDestroy,
+    waitForDestroy,
+    cancelDestroy,
   }
 
-  context.addTo('subscribers', guildId, subscriber)
-  voiceConnection.on(VoiceConnectionStatus.Destroyed, (_, __) => deleteSubscriber())
+  getContext().addTo('subscribers', guildId, subscriber)
+  voiceConnection.on(VoiceConnectionStatus.Destroyed, (_, __) => {
+    getContext().deleteFrom('subscribers', guildId)
+  })
 }
 export const getSubscriber = (guildId: string) => getContext().getFrom<Subscriber | undefined>('subscribers', guildId)

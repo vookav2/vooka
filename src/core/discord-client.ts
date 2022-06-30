@@ -1,9 +1,9 @@
 /* eslint-disable complexity */
 import { Client, Interaction } from 'discord.js'
 import { config, makeLogger } from '../util'
+import { getCommands, getSubscriber } from './managers'
 
 import { Button } from '../entities'
-import { getCommands } from './managers'
 import { getContext } from './context'
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -63,6 +63,17 @@ export const startDiscordClient = () => {
   })
   client.on('error', error => logger.error(error))
   client.on('interactionCreate', interaction => handleInteraction(interaction))
+  client.on('voiceStateUpdate', async ({ guild: oldGuild }, { guild: newGuild }) => {
+    const subscriber = getSubscriber(oldGuild.id)
+    if (oldGuild.id !== newGuild.id || !subscriber) {
+      return
+    }
+    if (subscriber.isWaitingToDestroy()) {
+      subscriber.cancelDestroy()
+    } else if (await subscriber.isNoMembers()) {
+      subscriber.waitForDestroy(60_000)
+    }
+  })
 
   const initiate = async () => {
     logger.debug('Client Initiating')
