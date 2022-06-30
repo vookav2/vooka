@@ -34,7 +34,7 @@ export const startDiscordClient = () => {
       if (!command || !command.handleAutocomplete) {
         return
       }
-      await command.handleAutocomplete(interaction)
+      command.handleAutocomplete(interaction).catch(() => true)
     } else if (interaction.isCommand()) {
       const { commandName } = interaction
       logger.debug(`Handling command ${commandName}`)
@@ -42,7 +42,7 @@ export const startDiscordClient = () => {
       if (!command) {
         return
       }
-      await command.handle(interaction)
+      command.handle(interaction).catch(() => true)
     } else if (interaction.isButton()) {
       const { customId } = interaction
       logger.debug(`Handling button ${customId}`)
@@ -50,7 +50,7 @@ export const startDiscordClient = () => {
       if (!button) {
         return
       }
-      await button.handle(interaction)
+      button.handle(interaction).catch(() => true)
     }
   }
 

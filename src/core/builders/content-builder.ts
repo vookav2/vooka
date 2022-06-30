@@ -77,7 +77,7 @@ export const makeLyricsEmbeds = (data: TLyrics): MessageEmbed[] | undefined => {
   const defaultEmbed = makeEmbed().addFields([{ name: '\u200B', value: italic(`Source: ${source.name}`) }])
   const embedTitle = strLimit(title, 256)
   const embeds: MessageEmbed[] = []
-  if (lyrics.length > 4096) {
+  if (lyrics.length > 4000) {
     const split = lyrics.split('\n\n')
     const len = split.length / 2
     embeds.push(defaultEmbed.setTitle(embedTitle).setDescription(split.splice(0, len).join('\n\n')))
