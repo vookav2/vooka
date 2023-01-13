@@ -16,10 +16,12 @@
   },
   "homepage": "https://github.com/vookav2/vooka#readme",
   "scripts": {
+    "prebuild": "rimraf dist",
     "ts:dev": "NODE_OPTIONS=--max-old-space-size=1024 ts-node-dev --respawn --transpile-only --no-notify --cls src/index.ts start-client | npx pino-pretty -i hostname -t SYS:standard",
     "ts:cmd": "ts-node-dev --respawn --transpile-only --no-notify --cls src/index.ts refresh-commands | npx pino-pretty -i hostname -t SYS:standard",
-    "ts:build": "rimraf build && tsc -p ./tsconfig.build.json",
+    "ts:build": "yarn prebuild && tsc -p ./tsconfig.build.json",
     "ts:debug": "node --inspect -r ts-node/register src/index.ts start-client",
+    "webpack:build": "NODE_ENV=production yarn prebuild && webpack --config webpack.config.js",
     "test": "NODE_ENV=test jest",
     "test:ci": "NODE_ENV=test jest --ci",
     "test:watch": "NODE_ENV=test jest --watch --verbose",
@@ -41,6 +43,7 @@
     "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-sonarjs": "^0.13.0",
+    "fork-ts-checker-webpack-plugin": "^7.3.0",
     "husky": "^8.0.1",
     "jest": "^27.4.1",
     "lint-staged": "^12.4.1",
@@ -48,8 +51,12 @@
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.1",
+    "ts-loader": "^9.4.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",

@@ -1,17 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "types": ["jest"],
     "module": "commonjs",
-    "moduleResolution": "node",
-    "allowJs": true,
-    "rootDir": ".",
-    "esModuleInterop": true,
-    "strict": true,
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
     "skipLibCheck": true,
-    "noEmitOnError": true,
-    "noImplicitAny": false
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts", "env.d.ts", "types.d.ts"],
   "exclude": ["node_modules", "build", "**/*.spec.ts", "**/__test__"]
