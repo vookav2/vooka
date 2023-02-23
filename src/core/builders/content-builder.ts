@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
 
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
-import { inlineCode, italic, userMention } from '@discordjs/builders'
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js'
+import { MessageActionRowComponentBuilder, inlineCode, italic, userMention } from '@discordjs/builders'
 
 import { Pagination } from '../managers'
 import { Song } from '@vookav2/searchmusic'
@@ -10,8 +10,8 @@ import { TLyrics } from 'songlyrics'
 import { emojiAudio } from '../../miscs'
 import { strLimit } from '../../util'
 
-const makeButton = () => new MessageButton().setStyle('SECONDARY').setDisabled(false)
-const makeEmbed = () => new MessageEmbed().setColor(0xf5f9f9)
+const makeButton = () => new ButtonBuilder().setStyle(ButtonStyle.Secondary).setDisabled(false)
+const makeEmbed = () => new EmbedBuilder().setColor(0xf5f9f9)
 
 export enum PlayerCustomId {
   Prev = 'player@prev',
@@ -30,9 +30,9 @@ export const makeButtonsPlayer = (options: {
   isRepeatCurrent?: boolean
   hasPrevious?: boolean
   hasNext?: boolean
-}): MessageActionRow[] => {
+}) => {
   const { isLoading, isPaused, isPlaying, isRepeatCurrent, hasNext, hasPrevious } = options
-  const topRow = new MessageActionRow().addComponents([
+  const topRow = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
     makeButton()
       .setLabel(emojiAudio.previous)
       .setCustomId(PlayerCustomId.Prev)
@@ -52,37 +52,41 @@ export const makeButtonsPlayer = (options: {
     makeButton()
       .setLabel(emojiAudio.stop)
       .setCustomId(PlayerCustomId.Stop)
-      .setStyle('DANGER')
+      .setStyle(ButtonStyle.Danger)
       .setDisabled(isLoading ?? false),
   ])
-  const bottomRow = new MessageActionRow().addComponents([
+  const bottomRow = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
     makeButton()
       .setLabel('Lyrics')
       .setCustomId(PlayerCustomId.Lyrics)
-      .setStyle('PRIMARY')
+      .setStyle(ButtonStyle.Primary)
       .setDisabled(isLoading ?? false),
     // makeButton()
     //   .setLabel('Add to Favorite')
     //   .setCustomId(PlayerCustomId.AddToFavorite)
-    //   .setStyle('PRIMARY')
+    //   .setStyle(ButtonStyle.Primary)
     //   .setDisabled(true),
   ])
   return [topRow, bottomRow]
 }
-export const makeLyricsButtons = (messageId: string): MessageActionRow[] => {
-  const row = new MessageActionRow().addComponents([
-    makeButton().setLabel('Remove').setCustomId(`guild:lyrics:${messageId}`).setStyle('DANGER').setDisabled(false),
+export const makeLyricsButtons = (messageId: string) => {
+  const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
+    makeButton()
+      .setLabel('Remove')
+      .setCustomId(`guild:lyrics:${messageId}`)
+      .setStyle(ButtonStyle.Danger)
+      .setDisabled(false),
   ])
   return [row]
 }
-export const makeLyricsEmbeds = (data: TLyrics): MessageEmbed[] | undefined => {
+export const makeLyricsEmbeds = (data: TLyrics): EmbedBuilder[] | undefined => {
   const { title, lyrics, source } = data
   if (!lyrics || !lyrics.length) {
     return undefined
   }
   const defaultEmbed = makeEmbed().addFields([{ name: '\u200B', value: italic(`Source: ${source.name}`) }])
   const embedTitle = strLimit(title, 256)
-  const embeds: MessageEmbed[] = []
+  const embeds: EmbedBuilder[] = []
   if (lyrics.length > 4000) {
     const split = lyrics.split('\n\n')
     const len = split.length / 2
@@ -128,10 +132,28 @@ export const makeSongEmbed = (song: Song, gifUrl?: string) => {
   return makeEmbed()
     .setTitle(`🎧 ${strLimit(song.title, 256)}`)
     .setDescription(makeSupportContent())
-    .addField('Artist', song.channel?.name ?? '-', true)
-    .addField(albumTitleOrViews, song.album?.title ?? '-', true)
-    .addField('Explicit', song.explicit ? 'Yes' : 'No', true)
-    .addField('Requested by', userMention('464985649460674572'), false)
+    .addFields(
+      {
+        name: 'Artist',
+        value: song.channel?.name ?? '-',
+        inline: true,
+      },
+      {
+        name: albumTitleOrViews,
+        value: song.album?.title ?? '-',
+        inline: true,
+      },
+      {
+        name: 'Explicit',
+        value: song.explicit ? 'Yes' : 'No',
+        inline: true,
+      },
+      {
+        name: 'Arranged by',
+        value: userMention('464985649460674572'),
+        inline: true,
+      }
+    )
     .setAuthor({ name: 'Playing', iconURL: gifUrl })
     .setFooter({ text: '•••', iconURL: gifUrl })
     .setThumbnail(song.thumbnail)

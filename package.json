@@ -59,17 +59,16 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
-    "@discordjs/rest": "^0.5.0",
-    "@discordjs/voice": "^0.10.0",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.14.0",
     "@vookav2/searchmusic": "^1.0.3",
-    "discord.js": "^13.7.0",
+    "discord.js": "^14.7.1",
     "dotenv": "^16.0.1",
     "pino": "^8.0.0",
     "redis": "^4.1.0",
-    "songlyrics": "^2.4.2",
+    "songlyrics": "^2.4.4",
     "tweetnacl": "^1.0.3",
-    "youtube-dl-exec": "^2.0.12"
+    "youtube-dl-exec": "^2.2.3"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [

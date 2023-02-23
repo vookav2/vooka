@@ -29,7 +29,7 @@ export const makeCommands = () => {
         throw new Error('Member not allowed')
       }
 
-      const query = options.getString('query', true)
+      const query = (options as any).getString('query', true)
 
       let playlistRequest: Promise<Playlist>
       if (ytUrl.isYtUrl(query)) {
@@ -92,7 +92,7 @@ export const makeCommands = () => {
       if (!guildId) {
         throw new Error('Request is not from a guild')
       }
-      const searchQuery = options.getString('search', true)
+      const searchQuery = (options as any).getString('search', true)
 
       const lyrics = await lyricsSearch(searchQuery)
       if (!lyrics) {

@@ -28,18 +28,34 @@ export const createAudioResourceFromStream = <T>(stream: Readable, metadata?: T)
     metadata,
   })
 
-export const createAudioStream = async (id: string, refererId?: string) =>
+export const createAudioStream = async (id: string, _refererId?: string) =>
+  // ./node_modules/youtube-dl-exec/bin/yt-dlp \
+  // --quiet \
+  // --format 'ba[aext=webm][acodec=opus][asr=48000]/ba[acodec=opus]' \
+  // --limit-rate 100K \
+  // --referer music.youtube.com \
+  // --user-agent googlebot \
+  // --no-check-certificates \
+  // --no-warnings \
+  // --dump-single-json \
+  // 'https://www.youtube.com/watch?v=xxx'
+
   new Promise<Readable>((resolve, reject) => {
     const logger = makeLogger('CreateAudioReadable')
     const childProcess = exec(
       `https://www.youtube.com/watch?v=${id}`,
       {
+        noCheckCertificates: true,
+        noWarnings: true,
         quiet: true,
         output: '-',
         retries: 7,
-        format: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+        // format: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+        format: 'ba[aext=webm][acodec=opus][asr=48000]/ba[acodec=opus]',
         limitRate: '100K',
-        referer: refererId ? `https://music.youtube.com/watch?v=${refererId}` : 'https://music.youtube.com',
+        userAgent: 'googlebot',
+        // referer: refererId ? `https://music.youtube.com/watch?v=${refererId}` : 'https://music.youtube.com',
+        referer: 'music.youtube.com',
       },
       {
         stdio: ['ignore', 'pipe', 'ignore'],
