@@ -66,7 +66,7 @@ export { ytUrl } from '@vookav2/searchmusic/build/yt-scraper/yt-util'
 
 export const makeLogger = (childName?: string) => {
   const pinoLogger = pino({
-    level: process.env.NODE_ENV === 'development' ? 'trace' : 'info',
+    level: process.env.LOG_LEVEL || 'trace',
   })
   return childName ? pinoLogger.child({ name: childName }) : pinoLogger
 }
