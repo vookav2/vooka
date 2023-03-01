@@ -37,6 +37,9 @@ export const makeVoiceConnection = ({
 
   voiceConnection.on('debug', debug => logger.debug(debug))
   voiceConnection.on('error', error => logger.error(error))
+  voiceConnection.on('stateChange', (oldState, newState) => {
+    logger.debug(`Voice connection state change: ${oldState.status} -> ${newState.status}`)
+  })
   voiceConnection.on(VoiceConnectionStatus.Disconnected, async (_, newState) => {
     if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
       logger.debug('Voice connection closed due to web socker close with code 4014, try to reconnect')

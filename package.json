@@ -68,7 +68,7 @@
     "redis": "^4.1.0",
     "songlyrics": "^2.4.4",
     "tweetnacl": "^1.0.3",
-    "youtube-dl-exec": "^2.2.3"
+    "youtube-dl-exec": "^2.3.1"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
