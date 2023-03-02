@@ -10,7 +10,7 @@ export const makeAudioPlayer = () => {
 
   const audioPlayer = new AudioPlayer({
     behaviors: {
-      noSubscriber: NoSubscriberBehavior.Pause,
+      noSubscriber: NoSubscriberBehavior.Play,
     },
     debug: true,
   })

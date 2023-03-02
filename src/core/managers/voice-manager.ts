@@ -37,8 +37,11 @@ export const makeVoiceConnection = ({
 
   voiceConnection.on('debug', debug => logger.debug(debug))
   voiceConnection.on('error', error => logger.error(error))
-  voiceConnection.on('stateChange', (oldState, newState) => {
-    logger.debug(`Voice connection state change: ${oldState.status} -> ${newState.status}`)
+  voiceConnection.on('stateChange', ({ status: oldStatus }, { status: newStatus }) => {
+    logger.debug(`Voice connection state change: ${oldStatus} -> ${newStatus}`)
+    if (oldStatus === VoiceConnectionStatus.Ready && newStatus === VoiceConnectionStatus.Connecting) {
+      voiceConnection.configureNetworking()
+    }
   })
   voiceConnection.on(VoiceConnectionStatus.Disconnected, async (_, newState) => {
     if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
