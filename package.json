@@ -66,7 +66,7 @@
     "dotenv": "^16.0.1",
     "pino": "^8.0.0",
     "redis": "^4.1.0",
-    "songlyrics": "^2.4.4",
+    "songlyrics": "^2.4.5",
     "tweetnacl": "^1.0.3",
     "youtube-dl-exec": "^2.3.1"
   },

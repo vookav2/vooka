@@ -4420,10 +4420,18 @@ slice-ansi@^5.0.0:
     ansi-styles "^6.0.0"
     is-fullwidth-code-point "^4.0.0"
 
-songlyrics@^2.4.2, songlyrics@^2.4.4:
+songlyrics@^2.4.2:
   version "2.4.4"
   resolved "https://registry.npmjs.org/songlyrics/-/songlyrics-2.4.4.tgz"
   integrity sha512-aFkST++P4CBGbK1A70W6M1qm4A9ar2b53SYdxEVYQPiNBWzAyeVkBFDkkEvPYR83AwSqRjhtAd1dzYTfEf4daA==
+  dependencies:
+    follow-redirects "^1.15.1"
+    node-html-parser "^5.3.3"
+
+songlyrics@^2.4.5:
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/songlyrics/-/songlyrics-2.4.5.tgz#048f860d467a0e3d7cba65c0a80f0396c020d1d6"
+  integrity sha512-Ncue046yIWUnnQTuk4dQMJq6i3VvNZeDGlFFW4/1sBmCUfzc9JXP8kAaxhT3qVt9bTRVIDRn/Kk/gzF33CoqvQ==
   dependencies:
     follow-redirects "^1.15.1"
     node-html-parser "^5.3.3"
