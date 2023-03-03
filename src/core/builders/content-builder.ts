@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
 
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js'
-import { MessageActionRowComponentBuilder, inlineCode, italic, userMention } from '@discordjs/builders'
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
+import { inlineCode, italic, userMention } from '@discordjs/builders'
 
 import { Pagination } from '../managers'
 import { Song } from '@vookav2/searchmusic'
@@ -10,8 +10,8 @@ import { TLyrics } from 'songlyrics'
 import { emojiAudio } from '../../miscs'
 import { strLimit } from '../../util'
 
-const makeButton = () => new ButtonBuilder().setStyle(ButtonStyle.Secondary).setDisabled(false)
-const makeEmbed = () => new EmbedBuilder().setColor(0xf5f9f9)
+const makeButton = () => new MessageButton().setStyle('SECONDARY').setDisabled(false)
+const makeEmbed = () => new MessageEmbed().setColor(0xf5f9f9)
 
 export enum PlayerCustomId {
   Prev = 'player@prev',
@@ -32,7 +32,7 @@ export const makeButtonsPlayer = (options: {
   hasNext?: boolean
 }) => {
   const { isLoading, isPaused, isPlaying, isRepeatCurrent, hasNext, hasPrevious } = options
-  const topRow = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
+  const topRow = new MessageActionRow().addComponents([
     makeButton()
       .setLabel(emojiAudio.previous)
       .setCustomId(PlayerCustomId.Prev)
@@ -52,14 +52,14 @@ export const makeButtonsPlayer = (options: {
     makeButton()
       .setLabel(emojiAudio.stop)
       .setCustomId(PlayerCustomId.Stop)
-      .setStyle(ButtonStyle.Danger)
+      .setStyle('DANGER')
       .setDisabled(isLoading ?? false),
   ])
-  const bottomRow = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
+  const bottomRow = new MessageActionRow().addComponents([
     makeButton()
       .setLabel('Lyrics')
       .setCustomId(PlayerCustomId.Lyrics)
-      .setStyle(ButtonStyle.Primary)
+      .setStyle('PRIMARY')
       .setDisabled(isLoading ?? false),
     // makeButton()
     //   .setLabel('Add to Favorite')
@@ -70,23 +70,19 @@ export const makeButtonsPlayer = (options: {
   return [topRow, bottomRow]
 }
 export const makeLyricsButtons = (messageId: string) => {
-  const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
-    makeButton()
-      .setLabel('Remove')
-      .setCustomId(`guild:lyrics:${messageId}`)
-      .setStyle(ButtonStyle.Danger)
-      .setDisabled(false),
+  const row = new MessageActionRow().addComponents([
+    makeButton().setLabel('Remove').setCustomId(`guild:lyrics:${messageId}`).setStyle('DANGER').setDisabled(false),
   ])
   return [row]
 }
-export const makeLyricsEmbeds = (data: TLyrics): EmbedBuilder[] | undefined => {
+export const makeLyricsEmbeds = (data: TLyrics): MessageEmbed[] | undefined => {
   const { title, lyrics, source } = data
   if (!lyrics || !lyrics.length) {
     return undefined
   }
   const defaultEmbed = makeEmbed().addFields([{ name: '\u200B', value: italic(`Source: ${source.name}`) }])
   const embedTitle = strLimit(title, 256)
-  const embeds: EmbedBuilder[] = []
+  const embeds: MessageEmbed[] = []
   if (lyrics.length > 4000) {
     const split = lyrics.split('\n\n')
     const len = split.length / 2

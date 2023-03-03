@@ -18,7 +18,7 @@ export const makeVoiceConnection = ({
   const voiceConnection = joinVoiceChannel({
     guildId,
     channelId,
-    adapterCreator: voiceAdapterCreator,
+    adapterCreator: voiceAdapterCreator as any,
     selfDeaf: true,
     selfMute: false,
     debug: config().NODE_ENV === 'development',

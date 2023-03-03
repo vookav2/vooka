@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { ActivityType, Client, Collection, Events, Interaction } from 'discord.js'
+import { Client, Collection, Interaction } from 'discord.js'
 import { config, makeLogger } from '../util'
 import { getCommands, getSubscriber } from './managers'
 
@@ -15,7 +15,7 @@ export const startDiscordClient = () => {
       activities: [
         {
           name: 'with my friends',
-          type: ActivityType.Playing,
+          type: 'PLAYING',
         },
       ],
     },
@@ -60,16 +60,16 @@ export const startDiscordClient = () => {
     }
   }
 
-  client.on(Events.Debug, debug => logger.debug(debug))
-  client.on(Events.Warn, warn => logger.warn(warn))
-  client.on(Events.ClientReady, _client => {
+  client.on('debug', debug => logger.debug(debug))
+  client.on('warn', warn => logger.warn(warn))
+  client.on('ready', _client => {
     _client.user.setUsername(`vooka 🫡${config().NODE_ENV === 'development' ? ' - nightly' : ''}`)
     getContext().add('client', _client)
     logger.info('Client ready!')
   })
-  client.on(Events.Error, error => logger.error(error))
-  client.on(Events.InteractionCreate, interaction => handleInteraction(interaction))
-  client.on(Events.VoiceStateUpdate, async ({ guild: oldGuild }, { guild: newGuild }) => {
+  client.on('error', error => logger.error(error))
+  client.on('interactionCreate', interaction => handleInteraction(interaction))
+  client.on('voiceStateUpdate', async ({ guild: oldGuild }, { guild: newGuild }) => {
     const subscriber = getSubscriber(oldGuild.id)
     if (oldGuild.id !== newGuild.id || !subscriber) {
       return

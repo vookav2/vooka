@@ -20,6 +20,6 @@ export const registerSlashCommands = async () => {
       body: commandsJSON,
     })
     .then(() => logger.info('Slash commands registered'))
-    .catch(err => logger.error(err))
+    .catch((err: any) => logger.error(err))
 }
 export const getCommands = () => getContext().get<Collection<string, Command>>('commands')

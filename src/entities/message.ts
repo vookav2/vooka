@@ -1,7 +1,5 @@
 import {
-  BaseMessageOptions,
   ButtonInteraction,
-  ChannelType,
   CommandInteraction,
   Message,
   MessageEditOptions,
@@ -15,10 +13,7 @@ type Interaction = ButtonInteraction | CommandInteraction
 
 export type MessageHandler = {
   message: Message | null
-  followUp: AsyncFuncParams<
-    { options: string | BaseMessageOptions | MessagePayload; deleteAfter?: number },
-    Message<boolean> | undefined
-  >
+  followUp: AsyncFuncParams<{ options: string | MessagePayload; deleteAfter?: number }, Message<boolean> | undefined>
   editReply: AsyncFuncParams<string | MessageEditOptions | WebhookEditMessageOptions, void>
   deleteReply: AsyncFunc<void>
   deleteReplyAfter: AsyncFuncParams<number, void>
@@ -38,7 +33,7 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
   }
 
   const followUp: MessageHandler['followUp'] = async ({ options, deleteAfter }) => {
-    if (!message || !message.channel.isTextBased() || message.channel.type === ChannelType.GuildStageVoice) {
+    if (!message || !message.channel.isText() || message.channel.type === 'GUILD_VOICE') {
       return
     }
     const followUpMessage = await message.channel.send(options)
