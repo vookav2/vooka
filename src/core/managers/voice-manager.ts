@@ -37,9 +37,21 @@ export const makeVoiceConnection = ({
 
   voiceConnection.on('debug', debug => logger.debug(debug))
   voiceConnection.on('error', error => logger.error(error))
-  voiceConnection.on('stateChange', ({ status: oldStatus }, { status: newStatus }) => {
-    logger.debug(`Voice connection state change: ${oldStatus} -> ${newStatus}`)
-    if (oldStatus === VoiceConnectionStatus.Ready && newStatus === VoiceConnectionStatus.Connecting) {
+  voiceConnection.on('stateChange', (oldState, newState) => {
+    logger.debug(`Voice connection state change: ${oldState.status} -> ${newState.status}`)
+
+    const oldNetworking = Reflect.get(oldState, 'networking')
+    const newNetworking = Reflect.get(newState, 'networking')
+
+    const onNetworkStateChangeHandler = (_oldNetworkState: any, newNetworkState: any) => {
+      const newUdpConnection = Reflect.get(newNetworkState, 'udp')
+      clearInterval(newUdpConnection?.keepAliveInterval)
+    }
+
+    oldNetworking?.off('stateChange', onNetworkStateChangeHandler)
+    newNetworking?.on('stateChange', onNetworkStateChangeHandler)
+
+    if (oldState.status === VoiceConnectionStatus.Ready && newState.status === VoiceConnectionStatus.Connecting) {
       voiceConnection.configureNetworking()
     }
   })
