@@ -10,6 +10,8 @@ import { getContext } from './context'
 export const startDiscordClient = () => {
   const client = new Client({
     intents: 1921,
+    closeTimeout: 50_000,
+    shards: 'auto',
     presence: {
       status: 'online',
       activities: [

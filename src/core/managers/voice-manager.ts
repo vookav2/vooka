@@ -43,17 +43,17 @@ export const makeVoiceConnection = ({
     const oldNetworking = Reflect.get(oldState, 'networking')
     const newNetworking = Reflect.get(newState, 'networking')
 
-    const onNetworkStateChangeHandler = (_oldNetworkState: any, newNetworkState: any) => {
-      const newUdpConnection = Reflect.get(newNetworkState, 'udp')
-      clearInterval(newUdpConnection?.keepAliveInterval)
+    const networkStateChangeHandler = (_oldNetworkState: any, newNetworkState: any) => {
+      const newUdp = Reflect.get(newNetworkState, 'udp')
+      clearInterval(newUdp?.keepAliveInterval)
     }
 
-    oldNetworking?.off('stateChange', onNetworkStateChangeHandler)
-    newNetworking?.on('stateChange', onNetworkStateChangeHandler)
+    oldNetworking?.off('stateChange', networkStateChangeHandler)
+    newNetworking?.on('stateChange', networkStateChangeHandler)
 
-    if (oldState.status === VoiceConnectionStatus.Ready && newState.status === VoiceConnectionStatus.Connecting) {
-      voiceConnection.configureNetworking()
-    }
+    // if (oldState.status === VoiceConnectionStatus.Ready && newState.status === VoiceConnectionStatus.Connecting) {
+    //   voiceConnection.configureNetworking()
+    // }
   })
   voiceConnection.on(VoiceConnectionStatus.Disconnected, async (_, newState) => {
     if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {

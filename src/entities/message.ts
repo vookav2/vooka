@@ -6,7 +6,7 @@ import {
   Message,
   MessageEditOptions,
   MessagePayload,
-  WebhookEditMessageOptions,
+  WebhookMessageEditOptions,
 } from 'discord.js'
 
 import { sleep } from '../util'
@@ -19,7 +19,7 @@ export type MessageHandler = {
     { options: string | BaseMessageOptions | MessagePayload; deleteAfter?: number },
     Message<boolean> | undefined
   >
-  editReply: AsyncFuncParams<string | MessageEditOptions | WebhookEditMessageOptions, void>
+  editReply: AsyncFuncParams<string | MessageEditOptions | WebhookMessageEditOptions, void>
   deleteReply: AsyncFunc<void>
   deleteReplyAfter: AsyncFuncParams<number, void>
 }
@@ -53,7 +53,7 @@ export const makeMessage: FuncParams<Interaction, MessageHandler> = _interaction
 
   const editReply: MessageHandler['editReply'] = async _options => {
     if (interaction) {
-      await interaction.editReply(_options as WebhookEditMessageOptions).then(saveMessage)
+      await interaction.editReply(_options as WebhookMessageEditOptions).then(saveMessage)
     } else if (message && message.editable) {
       await message.edit(_options).then(saveMessage)
     } else {

@@ -99,7 +99,8 @@ export const makeSubscriber: AsyncFuncParams<SubscriberParams, void> = async ({
   }
 
   getContext().addTo('subscribers', guildId, subscriber)
-  voiceConnection.on(VoiceConnectionStatus.Destroyed, (_, __) => {
+  voiceConnection.on(VoiceConnectionStatus.Destroyed, (oldState, newState) => {
+    logger.debug('SubscriberManager', oldState.status, newState.status)
     getContext().deleteFrom('subscribers', guildId)
   })
 }

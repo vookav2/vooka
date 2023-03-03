@@ -1,12 +1,12 @@
 /* eslint-disable complexity */
-import { ButtonInteraction, WebhookEditMessageOptions } from 'discord.js'
+import { ButtonInteraction, WebhookMessageEditOptions } from 'discord.js'
 
 import { makeMessage } from './message'
 
 type ButtonParams = {
   customId: string
   customIdStartWith?: string
-  handler: AsyncFuncParams<ButtonInteraction, string | WebhookEditMessageOptions | undefined>
+  handler: AsyncFuncParams<ButtonInteraction, string | WebhookMessageEditOptions | undefined>
   shouldDefer?: boolean
   deleteDelay?: number
   manualDelete?: boolean

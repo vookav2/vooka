@@ -1,5 +1,5 @@
 import { AudioPlayerStatus, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
-import { Message, WebhookEditMessageOptions } from 'discord.js'
+import { Message, WebhookMessageEditOptions } from 'discord.js'
 import { Playlist, Song } from '@vookav2/searchmusic'
 import { createAudioResourceFromStream, createAudioStream, makeAudioPlayer } from './audio-manager'
 import { makeButtonsPlayer, makePlaylistContent, makeSongEmbed } from '../builders/content-builder'
@@ -160,7 +160,7 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
       totalContent: length,
     }
   }
-  const getContent = (): WebhookEditMessageOptions => {
+  const getContent = (): WebhookMessageEditOptions => {
     const position = get<number>('position')
     const songs = get<Song[]>('songs')
     const playerOptions = {
