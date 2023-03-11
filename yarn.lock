@@ -1055,10 +1055,10 @@
     "@typescript-eslint/types" "5.53.0"
     eslint-visitor-keys "^3.3.0"
 
-"@vookav2/searchmusic@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@vookav2/searchmusic/-/searchmusic-1.0.3.tgz#4e98de709a42e83dd945874fdee63412fef4b202"
-  integrity sha512-LF5aWgRO+lt6C0a5nehsi9174EkkAodBVzAr3vJXmIRBr8O7tbBU50oy5NrLFnBrRWENEFUBAvKOyZq24bZ4iw==
+"@vookav2/searchmusic@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@vookav2/searchmusic/-/searchmusic-1.0.4.tgz#82ba4d02bfd3213556638238ee4510c9b57ba496"
+  integrity sha512-fIcpXdF2h2O+4D+3yiB/s2ZGU13D1og5m+M5E2Bl+pxbuQK5zPJKBRhsWHBeBfXIaUw3t4TdO9fSLX439JrP6Q==
   dependencies:
     crypto-js "^4.1.1"
     got "^11.8.2"

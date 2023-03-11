@@ -61,7 +61,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.14.0",
-    "@vookav2/searchmusic": "^1.0.3",
+    "@vookav2/searchmusic": "^1.0.4",
     "discord.js": "git@github.com:discordjs/discord.js.git@dc142c47e4021d6d37712453cc2fad6e4fe4e9f7",
     "dotenv": "^16.0.1",
     "pino": "^8.0.0",
