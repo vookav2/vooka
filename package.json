@@ -65,6 +65,7 @@
     "discord.js": "git@github.com:discordjs/discord.js.git@dc142c47e4021d6d37712453cc2fad6e4fe4e9f7",
     "dotenv": "^16.0.1",
     "pino": "^8.0.0",
+    "play-dl": "^1.9.6",
     "redis": "^4.1.0",
     "songlyrics": "^2.4.5",
     "tweetnacl": "^1.0.3",
