@@ -1,7 +1,7 @@
 import { AudioPlayerStatus, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
 import { Message, WebhookMessageEditOptions } from 'discord.js'
 import { Playlist, Song } from '@vookav2/searchmusic'
-import { createAudioResourceFromStream, createAudioStream, makeAudioPlayer } from './audio-manager'
+import { createAudioResourceFromStream, createAudioWebmUrl, makeAudioPlayer } from './audio-manager'
 import { makeButtonsPlayer, makePlaylistContent, makeSongEmbed } from '../builders/content-builder'
 
 import { MessageHandler } from '../../entities'
@@ -126,23 +126,23 @@ export const makeQueue: FuncParams<QueueParams, Queue> = ({
     const giftQuery = [song.title, song.channel.name]
     const gifUrl = await getRandomGifUrl(giftQuery[Math.floor(Math.random() * giftQuery.length)])
     set('gifUrl', gifUrl)
-    // await createAudioWebmUrl(song.id, getReferer())
-    //   .then(streamUrl => createAudioResourceFromStream(streamUrl, song))
-    //   .then(resource => audioPlayer.play(resource))
-    //   .catch(reason => {
-    //     queueLocked = false
-    //     logger.error(reason)
-    //     nextSong()
-    //   })
-
-    await createAudioStream(song.id, getReferer())
-      .then(stream => createAudioResourceFromStream(stream, song))
+    await createAudioWebmUrl(song.id, getReferer())
+      .then(streamUrl => createAudioResourceFromStream(streamUrl, song))
       .then(resource => audioPlayer.play(resource))
       .catch(reason => {
         queueLocked = false
         logger.error(reason)
         nextSong()
       })
+
+    // await createAudioStream(song.id, getReferer())
+    //   .then(stream => createAudioResourceFromStream(stream, song))
+    //   .then(resource => audioPlayer.play(resource))
+    //   .catch(reason => {
+    //     queueLocked = false
+    //     logger.error(reason)
+    //     nextSong()
+    //   })
     queueLocked = false
   }
   const pauseAudio = () => audioPlayer.pause()

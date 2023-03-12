@@ -1,4 +1,4 @@
-import { AudioPlayer, NoSubscriberBehavior, createAudioResource } from '@discordjs/voice'
+import { AudioPlayer, NoSubscriberBehavior, StreamType, createAudioResource } from '@discordjs/voice'
 import { create as createYoutubeDL, exec as youtubeDlExec } from 'youtube-dl-exec'
 
 import { Readable } from 'stream'
@@ -12,7 +12,7 @@ export const makeAudioPlayer = () => {
     behaviors: {
       noSubscriber: NoSubscriberBehavior.Pause,
     },
-    debug: true,
+    debug: false,
   })
 
   audioPlayer.on('debug', debug => logger.debug(debug))
@@ -23,7 +23,7 @@ export const makeAudioPlayer = () => {
 
 export const createAudioResourceFromStream = <T>(stream: Readable | string, metadata?: T) =>
   createAudioResource<T>(stream, {
-    // inputType: StreamType.WebmOpus,
+    inputType: StreamType.WebmOpus,
     silencePaddingFrames: 5,
     inlineVolume: false,
     metadata,
@@ -42,7 +42,6 @@ export const createAudioWebmUrl = async (id: string, _refererId?: string) => {
     noCheckCertificates: true,
     noWarnings: true,
     format: 'ba[aext=webm][acodec=opus][asr=48000]/ba[acodec=opus]',
-    limitRate: '100K',
     addHeader: [
       'referer:youtube.com',
       'user-agent:Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
@@ -61,17 +60,13 @@ export const createAudioStream = async (id: string, _refererId?: string) =>
     const childProcess = youtubeDlExec(
       `https://www.youtube.com/watch?v=${id}`,
       {
-        noCheckCertificates: true,
-        noWarnings: true,
         quiet: true,
         output: '-',
-        retries: 7,
-        // format: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
         format: 'ba[aext=webm][acodec=opus][asr=48000]/ba[acodec=opus]',
-        limitRate: '100K',
-        userAgent: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        // referer: refererId ? `https://music.youtube.com/watch?v=${refererId}` : 'https://music.youtube.com',
-        referer: 'music.youtube.com',
+        addHeader: [
+          'referer:youtube.com',
+          'user-agent:Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+        ],
       },
       {
         stdio: ['ignore', 'pipe', 'ignore'],
