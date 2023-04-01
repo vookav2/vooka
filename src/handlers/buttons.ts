@@ -106,9 +106,12 @@ export const makePlayerButtons = () => {
         return
       }
       const { title, channel, hash } = queue.currentSong()!
-      const lyrics = await lyricsSearch(`${title} ${channel.name}`, hash)
+      const query = `${title} ${channel.name}`
+      const lyrics = await lyricsSearch(query, hash)
       if (!lyrics) {
-        return
+        return {
+          content: 'I hardly find the lyrics for this song. You can try another way with the command `/lyrics <title>`',
+        }
       }
       const message = await _interaction.fetchReply()
       queue.addDeleteMessage(message as Message)
@@ -130,7 +133,9 @@ export const makePlayerButtons = () => {
       const messageId = customId.replace('guild:lyrics:', '')
       const lyricsContent = getContext().getFrom<MessageHandler | undefined>('lyrics', messageId)
       if (!lyricsContent) {
-        return
+        return {
+          content: "I'm having trouble finding the lyrics of the song you mean.",
+        }
       }
       await lyricsContent.deleteReply()
       getContext().deleteFrom('lyrics', messageId)
