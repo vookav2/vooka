@@ -108,13 +108,15 @@ export const makePlayerButtons = () => {
       const { title, channel, hash } = queue.currentSong()!
       const query = `${title} ${channel.name}`
       const lyrics = await lyricsSearch(query, hash)
+
+      const message = await _interaction.fetchReply()
+      queue.addDeleteMessage(message as Message)
+
       if (!lyrics) {
         return {
           content: 'I hardly find the lyrics for this song. You can try another way with the command `/lyrics <title>`',
         }
       }
-      const message = await _interaction.fetchReply()
-      queue.addDeleteMessage(message as Message)
       return {
         content: '\u200B',
         embeds: makeLyricsEmbeds(lyrics),
