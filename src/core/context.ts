@@ -52,7 +52,16 @@ class Context extends EventEmitter {
       const text = readFileSync(path, 'utf-8')
       return JSON.parse(text)
     } else {
-      const { NODE_ENV, LOG_LEVEL, TOKEN, CLIENT_ID, GUILD_TEST_ID, CHANNEL_TEST_ID, APP_ID, REDIS_URI } = process.env
+      const {
+        NODE_ENV,
+        LOG_LEVEL,
+        TOKEN,
+        CLIENT_ID,
+        GUILD_TEST_ID,
+        CHANNEL_TEST_ID,
+        APP_ID,
+        // REDIS_URI
+      } = process.env
       return {
         NODE_ENV,
         LOG_LEVEL,
@@ -61,7 +70,7 @@ class Context extends EventEmitter {
         GUILD_TEST_ID,
         CHANNEL_TEST_ID,
         APP_ID,
-        REDIS_URI,
+        // REDIS_URI,
       }
     }
   }

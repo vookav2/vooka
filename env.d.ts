@@ -10,7 +10,7 @@ declare global {
       CLIENT_ID: string
       GUILD_TEST_ID: string
       CHANNEL_TEST_ID: string
-      REDIS_URI: string
+      // REDIS_URI: string
     }
   }
 }
