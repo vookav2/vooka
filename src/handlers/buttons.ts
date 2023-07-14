@@ -136,7 +136,7 @@ export const makePlayerButtons = () => {
       const lyricsContent = getContext().getFrom<MessageHandler | undefined>('lyrics', messageId)
       if (!lyricsContent) {
         return {
-          content: "I'm having trouble finding the lyrics of the song you mean.",
+          content: 'I\'m having trouble finding the lyrics of the song you mean.',
         }
       }
       await lyricsContent.deleteReply()
